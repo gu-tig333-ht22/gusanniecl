@@ -1,5 +1,3 @@
-// Huvudfunktionen - Appen
-
 import 'package:flutter/material.dart';
 import 'homeview.dart';
 import 'secondview.dart';
@@ -13,6 +11,7 @@ class TodoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: MyHomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
