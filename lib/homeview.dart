@@ -37,7 +37,6 @@ class MyHomePage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => SecondView()));
             }));
   }
-}
 
 Widget _checkboxRow() {
   return Row(
