@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:template/secondview.dart';
 
-// Klass för att skapa task i to do list
+// Klass för att skapa en todo i todo list
 class Todo {
   String task;
   bool status;
@@ -15,7 +15,6 @@ class Todo {
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var todo = Todo('task', false);
     return Scaffold(
         appBar: AppBar(
           title: Text('To Do List'),
@@ -34,15 +33,17 @@ class MyHomePage extends StatelessWidget {
             child: Icon(Icons.add)));
   }
 
+// Lista
+  List<Todo> listOfTodos = [
+    Todo('Task', false),
+    Todo('Task1', false),
+    Todo('Task2', true),
+    Todo('Task3', false),
+    Todo('Task4', false),
+  ];
+
   // Lista som visar todo´s
   Widget _list() {
-    List<Todo> listOfTodos = [
-      Todo('Task', false),
-      Todo('Task1', false),
-      Todo('Task2', false),
-      Todo('Task3', false),
-      Todo('Task4', false),
-    ];
     return ListView(
       children: listOfTodos.map((item) => _item(item)).toList(),
     );

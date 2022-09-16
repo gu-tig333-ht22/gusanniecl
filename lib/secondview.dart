@@ -1,7 +1,6 @@
 // Vy två, där en uppgift kan adderas till to do listan
 
 import 'package:flutter/material.dart';
-import 'package:template/homeview.dart';
 
 class SecondView extends StatelessWidget {
   @override
