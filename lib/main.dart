@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'homeview.dart';
-import 'secondview.dart';
+import 'datahanterare.dart';
 
 void main() {
   runApp(TodoApp());
@@ -9,9 +10,13 @@ void main() {
 class TodoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MyHomePage(),
-      debugShowCheckedModeBanner: false,
+    var dataHanterare = DataHanterare();
+    return ChangeNotifierProvider(
+      create: (context) => dataHanterare,
+      child: MaterialApp(
+        home: MyHomePage(),
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }

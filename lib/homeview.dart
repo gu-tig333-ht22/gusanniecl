@@ -2,89 +2,60 @@
 
 import 'package:flutter/material.dart';
 import 'package:template/secondview.dart';
-
-// Klass för att skapa en todo i todo list
-class Todo {
-  String task;
-  bool status;
-
-  Todo(this.task, this.status);
-}
+import 'package:template/filtermenu.dart';
+import 'package:provider/provider.dart';
+import 'datahanterare.dart';
 
 //Hemvy
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('To Do List'),
-          backgroundColor: Colors.blueGrey,
-          elevation: 4,
-          actions: [_dropdownmenu()],
-        ),
-        body: _list(),
-        floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.blueGrey,
-            elevation: 6,
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SecondView()));
-            },
-            child: Icon(Icons.add)));
-  }
-
-// Lista
-  List<Todo> listOfTodos = [
-    Todo('Task', false),
-    Todo('Task1', false),
-    Todo('Task2', true),
-    Todo('Task3', false),
-    Todo('Task4', false),
-  ];
-
-  // Lista som visar todo´s
-  Widget _list() {
-    return ListView(
-      children: listOfTodos.map((item) => _item(item)).toList(),
-    );
-  }
-
-// Todo
-  Widget _item(Todo todo) {
-    return CheckboxListTile(
-        value: todo.status,
-        onChanged: (val) {},
-        title: Text(todo.task),
-        secondary: Icon(Icons.close),
-        controlAffinity: ListTileControlAffinity.leading,
-        checkColor: Color.fromARGB(255, 5, 29, 70),
-        activeColor: Colors.blueGrey,
-        checkboxShape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)));
-  }
-
-//Filtermeny
-  DropdownMenuItem<String> filter(String value) {
-    return DropdownMenuItem(
-      value: value,
-      child: Text(value),
-    );
-  }
-
-  Widget _dropdownmenu() {
-    return DropdownButtonHideUnderline(
-        child: Container(
-      color: Colors.blueGrey,
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: DropdownButton(
-            icon: Icon(
-              Icons.more_vert,
-              color: Colors.white,
+    return Consumer<DataHanterare>(
+        builder: (context, DataHanterare state, child) => Scaffold(
+            appBar: AppBar(
+              title: Text('To Do List'),
+              backgroundColor: Colors.blueGrey,
+              elevation: 4,
+              actions: [filtermenu()],
             ),
-            items: [filter('All'), filter('Done'), filter('Undone')],
-            onChanged: (value) {}),
+            body: listOfTodos(context, state.todos),
+            floatingActionButton: FloatingActionButton(
+                backgroundColor: Colors.blueGrey,
+                elevation: 6,
+                onPressed: () async {
+                  var newTodo = await Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SecondView()));
+                },
+                child: Icon(Icons.add))));
+  }
+
+  //Lista
+  Widget listOfTodos(BuildContext context, List<Todo> todos) {
+    return ListView(
+      children: todos.map((item) => _item(context, item)).toList(),
+    );
+  }
+
+  //Todo
+  Widget _item(context, Todo todo) {
+    return CheckboxListTile(
+      value: todo.status,
+      onChanged: (bool? newValue) {
+        Provider.of<DataHanterare>(context, listen: false)
+            .updatestate(todo, newValue!);
+      },
+      title: Text(todo.task),
+      secondary: IconButton(
+        icon: Icon(Icons.close),
+        onPressed: () {
+          Provider.of<DataHanterare>(context, listen: false).removetodo(todo);
+        },
       ),
-    ));
+      controlAffinity: ListTileControlAffinity.leading,
+      checkColor: Color.fromARGB(255, 5, 29, 70),
+      activeColor: Colors.blueGrey,
+      checkboxShape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+    );
   }
 }
