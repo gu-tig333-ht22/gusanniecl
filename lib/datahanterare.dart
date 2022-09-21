@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Klass för att skapa en todo i todo list
+//Class for creating todo's
 class Todo {
   String task;
   bool status;
@@ -12,32 +12,35 @@ class Todo {
   }
 }
 
-//String GetMessage => _message
-
 class DataHanterare extends ChangeNotifier {
   final List<Todo> _todos = [];
+  String _filterBy = 'All';
 
   List<Todo> get todos => _todos;
 
-  //Lägg till todo i listan
-  // void addtodo(Todo todoadd) {
-  // _todos.add(todoadd);
-  // notifyListeners();
-  //}
+  String get filterBy => _filterBy;
 
+  // Add todo to list
   void addtodo(String newtask, bool taskstate) {
     _todos.add(Todo(newtask, taskstate));
     notifyListeners();
   }
 
-  //Ta bort Todo från listan
+  // Remove todo from list
   void removetodo(Todo todoremove) {
     _todos.remove(todoremove);
     notifyListeners();
   }
 
+  // Change value of todo (done/undone)
   void updatestate(Todo todo, bool newValue) {
     todo.setIsDone(newValue);
+    notifyListeners();
+  }
+
+  //Todo list filter function
+  void setFilterBy(String filterBy) {
+    this._filterBy = filterBy;
     notifyListeners();
   }
 }

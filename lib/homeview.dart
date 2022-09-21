@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:template/secondview.dart';
-import 'package:template/filtermenu.dart';
 import 'package:provider/provider.dart';
 import 'datahanterare.dart';
 
@@ -16,9 +15,22 @@ class MyHomePage extends StatelessWidget {
               title: Text('To Do List'),
               backgroundColor: Colors.blueGrey,
               elevation: 4,
-              actions: [filtermenu()],
+              actions: [
+                PopupMenuButton(
+                  onSelected: (String value) {
+                    Provider.of<DataHanterare>(context, listen: false)
+                        .setFilterBy(value);
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(child: Text('All'), value: 'All'),
+                    PopupMenuItem(child: Text('Done'), value: 'Done'),
+                    PopupMenuItem(child: Text('Undone'), value: 'Undone'),
+                  ],
+                )
+              ],
             ),
-            body: listOfTodos(context, state.todos),
+            body:
+                listOfTodos(context, _filterList(state.todos, state.filterBy)),
             floatingActionButton: FloatingActionButton(
                 backgroundColor: Colors.blueGrey,
                 elevation: 6,
@@ -57,5 +69,14 @@ class MyHomePage extends StatelessWidget {
       checkboxShape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
     );
+  }
+
+  List<Todo> _filterList(list, filterBy) {
+    if (filterBy == 'All') return list;
+    if (filterBy == 'Done')
+      return list.where((todo) => todo.status == true).toList();
+    if (filterBy == 'Undone')
+      return list.where((todo) => todo.status == false).toList();
+    return list;
   }
 }
