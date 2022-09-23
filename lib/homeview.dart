@@ -3,42 +3,42 @@
 import 'package:flutter/material.dart';
 import 'package:template/secondview.dart';
 import 'package:provider/provider.dart';
-import 'datahanterare.dart';
+import 'datafrominternet.dart';
 
 //Hemvy
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<DataHanterare>(
-        builder: (context, DataHanterare state, child) => Scaffold(
-            appBar: AppBar(
-              title: Text('To Do List'),
-              backgroundColor: Colors.blueGrey,
-              elevation: 4,
-              actions: [
-                PopupMenuButton(
-                  onSelected: (String value) {
-                    Provider.of<DataHanterare>(context, listen: false)
-                        .setFilterBy(value);
-                  },
-                  itemBuilder: (context) => [
-                    PopupMenuItem(child: Text('All'), value: 'All'),
-                    PopupMenuItem(child: Text('Done'), value: 'Done'),
-                    PopupMenuItem(child: Text('Undone'), value: 'Undone'),
-                  ],
-                )
+    return Consumer<MyState>(
+      builder: (context, MyState state, child) => Scaffold(
+        appBar: AppBar(
+          title: Text('To Do List'),
+          backgroundColor: Colors.blueGrey,
+          elevation: 4,
+          actions: [
+            PopupMenuButton(
+              onSelected: (String value) {
+                Provider.of<MyState>(context, listen: false).setFilterBy(value);
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(child: Text('All'), value: 'All'),
+                PopupMenuItem(child: Text('Done'), value: 'Done'),
+                PopupMenuItem(child: Text('Undone'), value: 'Undone')
               ],
             ),
-            body:
-                listOfTodos(context, _filterList(state.todos, state.filterBy)),
-            floatingActionButton: FloatingActionButton(
-                backgroundColor: Colors.blueGrey,
-                elevation: 6,
-                onPressed: () async {
-                  var newTodo = await Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SecondView()));
-                },
-                child: Icon(Icons.add))));
+          ],
+        ),
+        body: listOfTodos(context, _filterList(state.todolist, state.filterBy)),
+        floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.blueGrey,
+            elevation: 6,
+            onPressed: () async {
+              var newTodo = await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SecondView()));
+            },
+            child: Icon(Icons.add)),
+      ),
+    );
   }
 
   //Lista
@@ -53,14 +53,13 @@ class MyHomePage extends StatelessWidget {
     return CheckboxListTile(
       value: todo.status,
       onChanged: (bool? newValue) {
-        Provider.of<DataHanterare>(context, listen: false)
-            .updatestate(todo, newValue!);
+        Provider.of<MyState>(context, listen: false).updateTodoStatus(todo);
       },
       title: Text(todo.task),
       secondary: IconButton(
         icon: Icon(Icons.close),
         onPressed: () {
-          Provider.of<DataHanterare>(context, listen: false).removetodo(todo);
+          Provider.of<MyState>(context, listen: false).removeTodo(todo);
         },
       ),
       controlAffinity: ListTileControlAffinity.leading,

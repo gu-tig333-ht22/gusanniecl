@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'homeview.dart';
-import 'datahanterare.dart';
+import 'datafrominternet.dart';
 
 void main() {
   runApp(TodoApp());
@@ -10,9 +10,9 @@ void main() {
 class TodoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var dataHanterare = DataHanterare();
+    var fetchList = MyState();
     return ChangeNotifierProvider(
-      create: (context) => dataHanterare,
+      create: (context) => fetchList,
       child: MaterialApp(
         home: MyHomePage(),
         debugShowCheckedModeBanner: false,
