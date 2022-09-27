@@ -33,7 +33,7 @@ class SecondView extends StatelessWidget {
                 if (userInput.text != '') {
                   Provider.of<MyState>(context, listen: false)
                       .addTodo(userInput.text);
-                  Navigator.pop(context, Todo());
+                  Navigator.pop(context);
                 }
               },
               color: Colors.blueGrey,

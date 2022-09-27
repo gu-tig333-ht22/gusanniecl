@@ -32,8 +32,8 @@ class MyHomePage extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.blueGrey,
             elevation: 6,
-            onPressed: () async {
-              var newTodo = await Navigator.push(context,
+            onPressed: () {
+              Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SecondView()));
             },
             child: Icon(Icons.add)),
@@ -41,7 +41,7 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  //Lista
+  //Listvy
   Widget listOfTodos(BuildContext context, List<Todo> todos) {
     return ListView(
       children: todos.map((item) => _item(context, item)).toList(),
@@ -53,13 +53,14 @@ class MyHomePage extends StatelessWidget {
     return CheckboxListTile(
       value: todo.status,
       onChanged: (bool? newValue) {
-        Provider.of<MyState>(context, listen: false).updateTodoStatus(todo);
+        Provider.of<MyState>(context, listen: false)
+            .updateStatus(todo.id, todo.task, newValue);
       },
       title: Text(todo.task),
       secondary: IconButton(
         icon: Icon(Icons.close),
         onPressed: () {
-          Provider.of<MyState>(context, listen: false).removeTodo(todo);
+          Provider.of<MyState>(context, listen: false).removeTodo(todo.id);
         },
       ),
       controlAffinity: ListTileControlAffinity.leading,
@@ -70,12 +71,12 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  List<Todo> _filterList(list, filterBy) {
+  List<Todo> _filterList(List<Todo> list, filterBy) {
     if (filterBy == 'All') return list;
-    if (filterBy == 'Done')
+    if (filterBy == 'Done') {
       return list.where((todo) => todo.status == true).toList();
-    if (filterBy == 'Undone')
+    } else {
       return list.where((todo) => todo.status == false).toList();
-    return list;
+    }
   }
 }

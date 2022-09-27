@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-// Felmeddelande när ny todo ska läggas till:
-//FormatException (FormatException: Unexpected character (at character 1)
-//<!DOCTYPE html>
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 class MyState extends ChangeNotifier {
   List<Todo> todolist = [];
 
-  String apikey = '4b788996-b89f-485e-95df-7c75d8ef4e1c';
-  String url = 'https://todoapp-api.apps.k8s.gu.se/';
-  String getlist = '/todos';
+  static String apikey = '?key=4b788996-b89f-485e-95df-7c75d8ef4e1c';
+  static String url = 'https://todoapp-api.apps.k8s.gu.se';
+  static String getlist = '/todos';
 
   String _filterBy = 'All';
   String get filterBy => _filterBy;
 
-  TodoHandler() {
+  MyState() {
     newTodoList();
   }
 
@@ -28,8 +26,7 @@ class MyState extends ChangeNotifier {
     http.Response response = await http.get(
       Uri.parse("$url$getlist$apikey"),
     );
-    todolist = createList(jsonDecode(response.body));
-    notifyListeners();
+    createList(jsonDecode(response.body));
   }
 
   // Lägg till todo
@@ -37,34 +34,32 @@ class MyState extends ChangeNotifier {
     http.Response response = await http.post(
       Uri.parse('$url$getlist$apikey'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({"title": newTodoName}),
+      body: json.encode({'title': newTodoName}),
     );
     createList(jsonDecode(response.body));
-    notifyListeners();
   }
 
   // Uppdatera status på todo
-  Future updateTodoStatus(Todo todoToUpdate) async {
+
+  void updateStatus(String id, String task, bool? newValue) async {
+    print('$url$getlist$id$apikey');
     http.Response response = await http.put(
-      Uri.parse("$url$getlist/${todoToUpdate.id}$apikey"),
-      headers: {"Content-Type": "application/json"},
+      Uri.parse('$url$getlist/$id$apikey'),
+      headers: {'Content-Type': 'application/json'},
       body: json.encode({
-        "title": todoToUpdate.task,
-        "done": !todoToUpdate.status,
+        'title': task,
+        'done': newValue,
       }),
     );
-    todolist = createList(json.decode(response.body));
-    notifyListeners();
+    createList(jsonDecode(response.body));
   }
 
   // Ta bort todo
-  Future removeTodo(Todo todoToRemove) async {
-    String tempUrl = "$url$getlist${todoToRemove.id}$apikey";
-    http.Response response = await http.delete(
-      Uri.parse("$url$getlist/${todoToRemove.id}$apikey"),
-    );
-    todolist = createList(json.decode(response.body));
-    notifyListeners();
+  Future removeTodo(String id) async {
+    http.Response response =
+        await http.delete(Uri.parse('$url$getlist/$id$apikey'));
+
+    createList(jsonDecode(response.body));
   }
 
   //Filtrera lista
@@ -73,38 +68,44 @@ class MyState extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Todo> createList(data) {
-    List<Todo> newTodoList = [];
+  void createList(data) {
+    todolist.clear();
     data.forEach((todo) {
-      newTodoList.add(Todo(
-        task: todo["title"],
-        id: todo["id"],
-        status: todo["done"],
+      todolist.add(Todo(
+        task: todo['title'],
+        id: todo['id'],
+        status: todo['done'],
       ));
     });
-    return newTodoList;
+    notifyListeners();
   }
 }
 
 class Todo {
-  var _task;
-  var _status;
-  var _id;
-  Todo({String task = "", String id = "", status = false}) {
+  late String _task;
+  String id = '';
+  bool? _status = false;
+
+  Todo(
+      {required String task,
+      required String id,
+      bool status = false,
+      bool delete = false}) {
     this._task = task;
+    this.id = id;
     this._status = status;
-    this._id = id;
   }
 
   String get task => _task;
-  bool get status => _status;
-  String get id => _id;
+  bool? get status => _status;
 
-  set task(String newTask) {
+  setTask(
+    String newTask,
+  ) {
     _task = newTask;
   }
 
-  setIsDone() {
-    _status = !status;
+  setIsDone(bool? newStatus) {
+    _status = newStatus;
   }
 }

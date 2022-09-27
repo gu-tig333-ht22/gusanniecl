@@ -4,15 +4,14 @@ import 'homeview.dart';
 import 'datafrominternet.dart';
 
 void main() {
-  runApp(TodoApp());
+  runApp(MyApp());
 }
 
-class TodoApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var fetchList = MyState();
     return ChangeNotifierProvider(
-      create: (context) => fetchList,
+      create: (context) => MyState(),
       child: MaterialApp(
         home: MyHomePage(),
         debugShowCheckedModeBanner: false,
