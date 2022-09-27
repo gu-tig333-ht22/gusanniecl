@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'homeview.dart';
-import 'secondview.dart';
+import 'datafrominternet.dart';
 
 void main() {
-  runApp(TodoApp());
+  runApp(MyApp());
 }
 
-class TodoApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MyHomePage(),
-      debugShowCheckedModeBanner: false,
+    return ChangeNotifierProvider(
+      create: (context) => MyState(),
+      child: MaterialApp(
+        home: MyHomePage(),
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }

@@ -1,8 +1,10 @@
-// Vy två, där en uppgift kan adderas till to do listan
-
 import 'package:flutter/material.dart';
+import 'package:template/datafrominternet.dart';
+import 'package:provider/provider.dart';
 
 class SecondView extends StatelessWidget {
+  TextEditingController userInput = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,10 +26,15 @@ class SecondView extends StatelessWidget {
                         borderSide: BorderSide(color: Colors.grey)),
                     floatingLabelStyle: TextStyle(color: Colors.grey)),
                 textInputAction: TextInputAction.done,
-                cursorColor: Colors.grey),
+                cursorColor: Colors.grey,
+                controller: userInput),
             MaterialButton(
               onPressed: () {
-                Navigator.pop(context);
+                if (userInput.text != '') {
+                  Provider.of<MyState>(context, listen: false)
+                      .addTodo(userInput.text);
+                  Navigator.pop(context);
+                }
               },
               color: Colors.blueGrey,
               textColor: Colors.white,
